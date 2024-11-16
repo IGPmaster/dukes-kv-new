@@ -102,20 +102,10 @@ const bannerCacheKey = computed(() =>
 
 // Image handlers
 const onImageError = (type, url) => {
-    console.error(`🚫 ${type} Banner image failed to load:`, {
-        lang: lang.value,
-        url,
-        timestamp: new Date().toISOString()
-    });
     imageError.value = { type, url };
 };
 
 const onImageLoad = (url) => {
-    console.log('✅ Banner image loaded successfully:', {
-        lang: lang.value,
-        url,
-        timestamp: new Date().toISOString()
-    });
     imageLoaded.value = true;
 };
 
