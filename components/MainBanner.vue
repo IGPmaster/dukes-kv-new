@@ -17,17 +17,20 @@
               :alt="content.yoast_head_json.description"
               :title="content.yoast_head_json.og_title"
               @error="onImageError('desktop', content.acf.image_full)"
+              width="1920"
+              height="400"
             >
             <img 
               :src="content.acf.image_small" 
-              class="w-full" 
+              class="w-full banner-image" 
               :alt="content.yoast_head_json.description"
-              :title="content.yoast_head_json.og_title" 
+              :title="content.yoast_head_json.og_title"
               style="min-width: 100vw; padding-top:6rem;" 
               width="1920"
               height="400"
               @error="onImageError('mobile', content.acf.image_small)"
               @load="onImageLoad(content.acf.image_small)"
+              loading="eager"
             >
           </picture>
         </a>
