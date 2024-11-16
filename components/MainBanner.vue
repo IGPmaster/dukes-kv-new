@@ -242,4 +242,5 @@ onMounted(async () => {
 .sig_terms :deep(p strong) {
   @apply font-medium;
 }
+
 </style>
