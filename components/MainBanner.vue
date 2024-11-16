@@ -32,7 +32,8 @@
           </picture>
         </a>
       </div>
-
+    </div>
+    <div v-for="content in brandContent" :key="content.id">
       <!-- Significant Terms -->
       <div class="container mx-auto text-center text-primary sig_terms lg:py-5 lg:w-3/4">
         <div class="px-5 font-light text-xs" v-html="content.acf.sig_terms"></div>
@@ -119,14 +120,27 @@ const onImageLoad = (url) => {
 const preloadBannerImages = async (content) => {
   if (!content?.acf) return;
   
+  const imagesToPreload = [
+    content.acf.image_full,
+    content.acf.image_small
+  ].filter(Boolean); // Only include URLs that exist
+
+  // Only add trust_icons if it exists
+  if (content.acf.trust_icons) {
+    imagesToPreload.push(content.acf.trust_icons);
+  }
+  
   try {
-    await Promise.all([
-      preloadImage(content.acf.image_full),
-      preloadImage(content.acf.image_small),
-      preloadImage(content.acf.trust_icons)
-    ]);
+    await Promise.allSettled(
+      imagesToPreload.map(url => 
+        preloadImage(url).catch(err => {
+          console.warn(`Failed to preload image: ${url}`, err);
+          return null;
+        })
+      )
+    );
   } catch (error) {
-    console.warn('Failed to preload some banner images:', error);
+    console.warn('Banner image preloading failed:', error);
   }
 };
 
@@ -163,35 +177,26 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Your existing styles remain the same */
+.banner-container {
+  aspect-ratio: 1920/400;
+  /* Match your image dimensions */
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.banner-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* Remove default img spacing */
+}
 .loading-placeholder {
-  min-height: 175vw;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #f0f0f0;
+  /* Light grey or your theme color */
 }
-
-@media (min-width: 768px) {
-  .loading-placeholder {
-    min-height: 120vw;
-  }
-}
-
-@media (min-width: 992px) {
-  .loading-placeholder {
-    min-height: 70vw;
-  }
-}
-
-@media (min-width: 1920px) {
-  .loading-placeholder {
-    min-height: 58vw;
-  }
-}
-
-@media (min-width: 2400px) {
-  .loading-placeholder {
-    min-height: 52vw;
-  }
-}
-
 .spinner {
   animation: rotate 2s linear infinite;
   z-index: 2;
@@ -202,19 +207,16 @@ onMounted(async () => {
   width: 50px;
   height: 50px;
 }
-
 .spinner .path {
   stroke: white;
   stroke-linecap: round;
   animation: dash 1.5s ease-in-out infinite;
 }
-
 @keyframes rotate {
   100% {
     transform: rotate(360deg);
   }
 }
-
 @keyframes dash {
   0% {
     stroke-dasharray: 1, 150;
@@ -231,21 +233,12 @@ onMounted(async () => {
     stroke-dashoffset: -124;
   }
 }
-
-/* Target the p tag inside sig_terms */
 .sig_terms :deep(p) {
   @apply font-light text-xs text-primary;
-  /* or without Tailwind: */
-  /* font-weight: 300;
-     font-size: 0.75rem;
-     color: var(--color-primary); */
 }
-
-/* If you need to target specific elements inside the terms */
 .sig_terms :deep(p a) {
   @apply text-primary hover:text-primary/90;
 }
-
 .sig_terms :deep(p strong) {
   @apply font-medium;
 }
