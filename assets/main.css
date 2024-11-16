@@ -17,7 +17,12 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: "Poppins", sans-serif;
     font-weight: 500;
     line-height: 1;
@@ -118,10 +123,12 @@ h6 {
         stroke-dasharray: 1, 150;
         stroke-dashoffset: 0;
     }
+
     50% {
         stroke-dasharray: 90, 150;
         stroke-dashoffset: -35;
     }
+
     100% {
         stroke-dasharray: 90, 150;
         stroke-dashoffset: -124;
@@ -242,6 +249,7 @@ h6 {
     .loading-placeholder {
         min-height: 50vw;
     }
+
     .footer_icons {
         grid-template-columns: repeat(6, 1fr);
         align-items: center;
