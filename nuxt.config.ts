@@ -58,11 +58,6 @@ export default defineNuxtConfig({
 
   css: ['~/assets/main.css'],
 
-  plugins: [
-    '~/plugins/language.js',
-    '~/plugins/hreflang.js',
-  ],
-
   app: {
     head: {
       title: 'Dukes Casino - Your Casino!',
