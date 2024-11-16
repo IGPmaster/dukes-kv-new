@@ -56,10 +56,12 @@ export default defineNuxtConfig({
           href: 'https://fonts.googleapis.com/icon?family=Material+Icons'
         }
       ],
+      htmlAttrs: {
+        lang: 'en'
+      }
     },
     pageTransition: { name: 'page', mode: 'out-in' }
   },
-
   hooks: {
     'app:created': async () => {
       await loadTranslations()
