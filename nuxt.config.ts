@@ -19,11 +19,9 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: 'cloudflare-pages',
-    prerender: {
-      routes: ['/'],
-      ignore: [
-        '/blog/**'
-      ]
+    output: {
+      dir: '.output',
+      publicDir: '.output/public'
     }
   },
   routeRules: {
@@ -72,7 +70,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://your-site.com'
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://dukescasino.com'
     }
   }
 });
