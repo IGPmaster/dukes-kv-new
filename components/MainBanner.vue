@@ -14,7 +14,7 @@
             <source 
               media="(min-width: 992px)" 
               :srcset="content.acf.image_full" 
-              :alt="content.yoast_head_json.description"
+              :alt="content.acf.image_small_alt"
               :title="content.yoast_head_json.og_title"
               @error="onImageError('desktop', content.acf.image_full)"
               width="1920"
@@ -23,7 +23,7 @@
             <img 
               :src="content.acf.image_small" 
               class="w-full banner-image" 
-              :alt="content.yoast_head_json.description"
+              :alt="content.acf.image_full_alt"
               :title="content.yoast_head_json.og_title"
               style="min-width: 100vw; padding-top:6rem;" 
               width="1920"
