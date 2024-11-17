@@ -359,6 +359,7 @@ export async function fetchFilterByName() {
   }
 }
 
+
 async function fetchGames() {
   try {
     await fetchFilterByName();
@@ -514,6 +515,25 @@ export async function fetchCountriesData() {
   }
 }
 
+export async function initializeApp() {
+  isLoading.value = true;
+  
+  try {
+    // Load critical data first
+    await initializeGeoData();
+    
+    // Load other data in parallel
+    await Promise.all([
+      fetchBrandContent(),
+      fetchFooterIcons(lang.value),
+      fetchFooterText(lang.value)
+    ]);
+    
+  } finally {
+    isLoading.value = false;
+    contentLoaded.value = true;
+  }
+}
 
 export { 
     brandContent,
