@@ -22,19 +22,18 @@ export default defineNuxtConfig({
     output: {
       dir: '.output',
       publicDir: '.output/public'
+    },
+    prerender: {
+      fallback: true,
+      crawlLinks: true,
+      routes: ['/']
     }
   },
   routeRules: {
-    '/': { prerender: true },
-    '/blog/**': { 
-      ssr: true,
-      swr: false
-    }
+    '/**': { isr: true }
   },
   experimental: {
-    payloadExtraction: false,
-    inlineSSRStyles: false,
-    renderJsonPayloads: true
+    payloadExtraction: false
   },
   router: {
     options: {
