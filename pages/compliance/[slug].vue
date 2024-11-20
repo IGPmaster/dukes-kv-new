@@ -20,8 +20,6 @@
 import { useRoute } from 'vue-router';
 import { ref } from 'vue';
 import { msgTranslate, globalContent, loadTranslations } from '~/composables/globalData';
-import { WHITELABEL_ID } from '~/composables/globalData'
-const brandId = computed(() => WHITELABEL_ID)
 
 const route = useRoute();
 const slug = route.params.slug;
@@ -30,10 +28,9 @@ async function fetchContent(slug) {
     try {
         const response = await fetch(
             `${PP_API_URL}GetInfoContentByCode?whitelabelId=${WHITELABEL_ID}&country=${lang.value}&code=${slug}`
-            //`http://content.progressplay.net/api23/api/InfoContent?whitelabelId=&country=en&Code=${slug}`
         );
         const data = await response.json();
-        return data[0].Html; // Return the Html content instead of updating the ref
+        return data[0].Html;
     } catch (error) {
         console.error(error);
     }
@@ -41,13 +38,13 @@ async function fetchContent(slug) {
 
 const htmlContent = ref('');
 
-(async () => {
-    htmlContent.value = await fetchContent(slug); // Set the htmlContent.value here
+onMounted(async () => {
+    htmlContent.value = await fetchContent(slug);
     await loadTranslations();
-})();
+});
 
 const handleClick = async (key) => {
-    const code = updateCode(key, globalContent.value); // Use globalContent.value here
+    const code = updateCode(key, globalContent.value);
     htmlContent.value = await fetchContent(code);
 };
 </script>
