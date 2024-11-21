@@ -86,6 +86,7 @@ import { useRoute } from 'vue-router';
 import { fetchBlogPosts, blogPosts } from '~/composables/globalData';
 
 const route = useRoute();
+const slug = route.params.slug;
 const post = ref(null);
 const loading = ref(true);
 const error = ref(false);
@@ -96,9 +97,14 @@ const getImageUrl = (url) => {
 };
 
 onMounted(async () => {
+  loading.value = true;
+  
   try {
-    await fetchBlogPosts();
-    const foundPost = blogPosts.value.find(p => p.slug === route.params.slug);
+    if (!blogPosts.value?.length) {
+      await fetchBlogPosts();
+    }
+    
+    const foundPost = blogPosts.value.find(p => p.slug === slug);
     
     if (!foundPost) {
       error.value = true;
@@ -107,6 +113,7 @@ onMounted(async () => {
 
     post.value = foundPost;
   } catch (err) {
+    console.error('Error loading blog post:', err);
     error.value = true;
   } finally {
     loading.value = false;

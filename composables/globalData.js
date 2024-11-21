@@ -61,7 +61,6 @@ const loginLink = ref([null]);
 const playLink = ref([null]);
 const msgTranslate = ref({});
 const pp_promotions = ref([]);
-const promotionsPosts = ref([]);
 const countryCode = ref('');
 const countryName = ref('');
 const countries = ref('');
@@ -259,7 +258,7 @@ async function fetchApiPromotions() {
     const data = await response.json();
     pp_promotions.value = data;
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching PP promotions:', error);
   }
 }
 
@@ -311,23 +310,18 @@ export async function fetchBrandContent() {
 // Add new function for actual promotions
 export async function fetchPromotions() {
   try {
-
-    
     const response = await fetch(
       `${PROMOTIONS_WORKER_URL}/promotions?brandId=${WHITELABEL_ID}&lang=${lang.value}`
     );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch promotions');
+      throw new Error('Failed to fetch KV promotions');
     }
 
     const promotions = await response.json();
     promotionsData.value = promotions.filter(promo => promo.status === 'active');
-    
-
-    
   } catch (error) {
-    console.error('Error fetching promotions:', error);
+    console.error('Error fetching KV promotions:', error);
     promotionsData.value = [];
   }
 }
@@ -535,7 +529,6 @@ export {
     playLink,
     msgTranslate,
     pp_promotions,
-    promotionsPosts,
     countryCode,
     countryName,
     countries,

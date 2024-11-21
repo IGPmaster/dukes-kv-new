@@ -127,10 +127,9 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useHead } from '#imports';
 import { fetchPromotions, promotionsData } from '~/composables/globalData';
-import { WHITELABEL_ID } from '~/composables/globalData'
-const brandId = computed(() => WHITELABEL_ID)
 
 const route = useRoute();
+const slug = route.params.slug;
 const promotion = ref(null);
 const loading = ref(true);
 const error = ref(false);
@@ -164,9 +163,15 @@ const promotionTypeDisplay = (type) => {
 
 // Fetch promotion data
 onMounted(async () => {
+  loading.value = true;
+  
   try {
-    await fetchPromotions();
-    const foundPromotion = promotionsData.value.find(p => p.slug === route.params.slug);
+    // Check if data is already loaded
+    if (!promotionsData.value?.length) {
+      await fetchPromotions();
+    }
+    
+    const foundPromotion = promotionsData.value.find(p => p.slug === slug);
     
     if (!foundPromotion) {
       error.value = true;
@@ -201,8 +206,8 @@ onMounted(async () => {
         }
       ]
     });
-  } catch (error) {
-    console.error('Error fetching promotion:', error);
+  } catch (err) {
+    console.error('Error fetching promotion:', err);
     error.value = true;
   } finally {
     loading.value = false;
