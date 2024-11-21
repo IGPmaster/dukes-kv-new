@@ -1,0 +1,5 @@
+# Allow direct access to dynamic routes
+/blog/*    /blog/:splat   200
+
+# Fallback for all other routes (SPA behavior)
+/*        /index.html    200
