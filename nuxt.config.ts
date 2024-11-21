@@ -9,11 +9,18 @@ export default defineNuxtConfig({
     prerender: {
       fallback: true,
       crawlLinks: true,
-      routes: ['/']
+      routes: ['/blog']
+    },
+    public: {
+      baseURL: '/public'
     }
   },
   routeRules: {
-    '/**': { isr: true }
+    '/**': { isr: true },
+    '/blog/**': {
+      ssr: true,
+      swr: false
+    }
   },
   experimental: {
     payloadExtraction: false

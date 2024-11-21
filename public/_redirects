@@ -1,2 +1,2 @@
-/blog/*    /index.html   200
-/*         /index.html   200
+/blog/*    /_nuxt/index.html   200
+/*         /_nuxt/index.html   200
