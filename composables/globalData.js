@@ -508,6 +508,28 @@ export async function fetchCountriesData() {
   }
 }
 
+export async function fetchBlogPost(slug) {
+  try {
+    // First check if we already have the post in our state
+    const found = blogPosts.value.find(p => p.slug === slug);
+    if (found) return found;
+
+    // If not, try to fetch it directly
+    const response = await fetch(
+      `${PAGES_WORKER_URL}/api/pages/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
+    );
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch blog post');
+    }
+
+    const post = await response.json();
+    return post;
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
+    return null;
+  }
+}
 
 export { 
     brandContent,
