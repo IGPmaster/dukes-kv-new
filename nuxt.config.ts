@@ -1,5 +1,4 @@
 export default defineNuxtConfig({
-  ssr: true,
   router: {
     extendRoutes(routes, resolve) {
       routes.push({
