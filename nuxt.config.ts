@@ -1,22 +1,5 @@
 export default defineNuxtConfig({
   ssr: true,
-  devtools: { enabled: false },
-  modules: [
-    '@nuxtjs/tailwindcss',
-    '@nuxtjs/google-fonts'
-  ],
-  googleFonts: {
-    families: {
-      Poppins: [300, 400, 500, 600, 700],
-      Roboto: [100, 200, 300, 400, 500, 600, 700]
-    },
-    display: 'swap',
-    prefetch: true,
-    preconnect: true,
-    preload: true,
-    download: true,
-    base64: false
-  },
   nitro: {
     preset: 'cloudflare-pages',
     output: {
@@ -35,14 +18,23 @@ export default defineNuxtConfig({
   experimental: {
     payloadExtraction: false
   },
-  router: {
-    options: {
-      strict: false,
-      trailingSlash: true
-    }
-  },
   css: ['~/assets/main.css'],
-
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/google-fonts'
+  ],
+  googleFonts: {
+    families: {
+      Poppins: [300, 400, 500, 600, 700],
+      Roboto: [100, 200, 300, 400, 500, 600, 700]
+    },
+    display: 'swap',
+    prefetch: true,
+    preconnect: true,
+    preload: true,
+    download: true,
+    base64: false
+  },
   app: {
     head: {
       title: 'Dukes Casino - Your Casino!',
@@ -65,14 +57,6 @@ export default defineNuxtConfig({
   hooks: {
     'app:created': async () => {
       await loadTranslations()
-    }
-  },
-  build: {
-    transpile: ['vue']
-  },
-  runtimeConfig: {
-    public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://dukescasino.com'
     }
   }
 });
