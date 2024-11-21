@@ -9,21 +9,18 @@ export default defineNuxtConfig({
     prerender: {
       fallback: true,
       crawlLinks: true,
-      routes: ['/blog']
+      routes: [] // Remove dynamic routes like '/blog'
     },
     public: {
-      baseURL: '/public'
+      baseURL: '/' // Use '/' for root deployment
     }
   },
   routeRules: {
-    '/**': { isr: true },
-    '/blog/**': {
-      ssr: true,
-      swr: false
-    }
+    '/**': { isr: true }, // Default for most pages
+    '/blog/**': { ssr: true, swr: true, swrTTL: 60 } // Dynamic rendering
   },
-  experimental: {
-    payloadExtraction: false
+  router: {
+    trailingSlash: false // Ensure no redirect loops from trailing slashes
   },
   css: ['~/assets/main.css'],
   modules: [
