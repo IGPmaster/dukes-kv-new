@@ -1,0 +1,2 @@
+const a=".prose[data-v-0df94091] a{--tw-text-opacity:1;color:rgb(63 27 60/var(--tw-text-opacity))}.prose[data-v-0df94091] a:hover{color:rgba(63,27,60,.9)}.prose[data-v-0df94091] ul{list-style-type:disc;padding-left:1.5rem}.prose[data-v-0df94091] ol{list-style-type:decimal;padding-left:1.5rem}p[data-v-0df94091]{color:#fff}.bg-orange-500[data-v-0df94091]{background-color:coral}.bg-orange-600[data-v-0df94091]:hover{background-color:tomato}";export{a as _};
+//# sourceMappingURL=_slug_-styles-1.mjs-Cpb3yLxG.mjs.map

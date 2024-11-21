@@ -1,5 +1,14 @@
 export default defineNuxtConfig({
   ssr: true,
+  router: {
+    extendRoutes(routes, resolve) {
+      routes.push({
+        path: '/blog/:slug',
+        component: resolve(__dirname, 'pages/blog/_slug.vue'),
+      });
+    },
+    trailingSlash: false
+  },
   nitro: {
     preset: 'cloudflare-pages',
     output: {
@@ -10,17 +19,11 @@ export default defineNuxtConfig({
       fallback: true,
       crawlLinks: true,
       routes: [] // Remove dynamic routes like '/blog'
-    },
-    public: {
-      baseURL: '/' // Use '/' for root deployment
     }
   },
   routeRules: {
-    '/**': { isr: true }, // Default for most pages
-    '/blog/**': { ssr: true, swr: true, swrTTL: 60 } // Dynamic rendering
-  },
-  router: {
-    trailingSlash: false // Ensure no redirect loops from trailing slashes
+    '/**': { isr: true }, // Static pages with incremental regeneration
+    '/blog/**': { ssr: true } // Dynamic rendering for blog
   },
   css: ['~/assets/main.css'],
   modules: [
