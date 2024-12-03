@@ -1,11 +1,5 @@
 export default defineNuxtConfig({
   router: {
-    extendRoutes(routes, resolve) {
-      routes.push({
-        path: '/blog/:slug',
-        component: resolve(__dirname, 'pages/blog/_slug.vue'),
-      });
-    },
     trailingSlash: false
   },
   nitro: {
@@ -15,7 +9,7 @@ export default defineNuxtConfig({
       publicDir: '.output/public'
     },
     prerender: {
-      fallback: true,
+      failOnError: false,
       crawlLinks: true,
       routes: [
         '/',
@@ -24,10 +18,21 @@ export default defineNuxtConfig({
       ]
     }
   },
+  experimental: {
+    payloadExtraction: true
+  },
   routeRules: {
-    '/**': { isr: true }, // Static pages with incremental regeneration
-    '/blog/**': { ssr: true }, // Dynamic rendering for blog
-    '/promotion/**': { ssr: true }
+    '/': { prerender: true },
+    '/blog': { prerender: true },
+    '/promotion': { prerender: true },
+    '/blog/**': { 
+      prerender: false,
+      swr: true
+    },
+    '/promotion/**': { 
+      prerender: false,
+      swr: true
+    }
   },
   css: ['~/assets/main.css'],
   modules: [
