@@ -1,6 +1,0 @@
-# SPA fallback
-/* /index.html 200
-
-# Exclude specific paths from SPA fallback
-/_nuxt/* /_nuxt/:splat 200
-/static/* /static/:splat 200
