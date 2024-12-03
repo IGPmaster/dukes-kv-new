@@ -1,11 +1,7 @@
-# SPA fallback
-/blog/* /index.html 200
-/promotion/* /index.html 200
-
-# Exclude specific paths from SPA fallback
+# Handle static assets and API routes first
 /_nuxt/* /_nuxt/:splat 200
 /static/* /static/:splat 200
 /api/* /api/:splat 200
 
-# All other routes fallback to SPA
-/* /index.html 200
+# SPA fallback for dynamic routes and all other paths
+/* / 200
