@@ -123,10 +123,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { useHead } from '#imports';
-import { fetchPromotions, promotionsData } from '~/composables/globalData';
+import { fetchPromotions, promotionsData, lang, WHITELABEL_ID } from '~/composables/globalData';
 
 const route = useRoute();
 const slug = route.params.slug;
@@ -166,6 +166,9 @@ onMounted(async () => {
   loading.value = true;
   
   try {
+    // Wait for language to be initialized
+    await nextTick();
+    
     // Check if data is already loaded
     if (!promotionsData.value?.length) {
       await fetchPromotions();
@@ -174,7 +177,17 @@ onMounted(async () => {
     const foundPromotion = promotionsData.value.find(p => p.slug === slug);
     
     if (!foundPromotion) {
-      error.value = true;
+      // Try to fetch the specific promotion directly
+      const response = await fetch(
+        `${PROMOTIONS_WORKER_URL}/promotions/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
+      );
+      
+      if (!response.ok) {
+        error.value = true;
+        return;
+      }
+      
+      promotion.value = await response.json();
       return;
     }
 

@@ -81,9 +81,9 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
-import { fetchBlogPosts, blogPosts } from '~/composables/globalData';
+import { fetchBlogPosts, blogPosts, lang } from '~/composables/globalData';
 
 const route = useRoute();
 const slug = route.params.slug;
@@ -100,6 +100,9 @@ onMounted(async () => {
   loading.value = true;
   
   try {
+    // Wait for language to be initialized
+    await nextTick();
+    
     if (!blogPosts.value?.length) {
       await fetchBlogPosts();
     }
@@ -107,7 +110,17 @@ onMounted(async () => {
     const foundPost = blogPosts.value.find(p => p.slug === slug);
     
     if (!foundPost) {
-      error.value = true;
+      // Try to fetch the specific post directly
+      const response = await fetch(
+        `${PAGES_WORKER_URL}/api/pages/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
+      );
+      
+      if (!response.ok) {
+        error.value = true;
+        return;
+      }
+      
+      post.value = await response.json();
       return;
     }
 
