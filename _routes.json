@@ -11,14 +11,16 @@
   "routes": [
     {
       "src": "/blog/.*",
-      "continue": true,
+      "dest": "/",
+      "status": 200,
       "headers": {
         "Cache-Control": "public, max-age=0, must-revalidate"
       }
     },
     {
       "src": "/promotion/.*",
-      "continue": true,
+      "dest": "/",
+      "status": 200,
       "headers": {
         "Cache-Control": "public, max-age=0, must-revalidate"
       }
