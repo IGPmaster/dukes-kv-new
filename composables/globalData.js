@@ -228,6 +228,19 @@ export async function loadTranslations() {
       msgTranslate.value = {
         login: 'Login',
         sign_up: 'Sign Up',
+        // Cookie consent translations
+        cookieConsentText: 'We use cookies to ensure our partners are properly credited when you visit gaming sites. This is essential for our service operation and partner payments. We also use analytics cookies to improve our service.',
+        acceptAll: 'Accept All',
+        declineOptional: 'Decline Optional Cookies',
+        managePreferences: 'Manage Preferences',
+        cookiePreferences: 'Cookie Preferences',
+        cookieNecessary: 'Necessary Cookies',
+        cookieNecessaryDesc: 'Essential for website functionality.',
+        cookieAnalytics: 'Analytics Cookies',
+        cookieAnalyticsDesc: 'Help us improve our website performance',
+        cookieAffiliate: 'Affiliate Tracking',
+        cookieAffiliateDesc: 'Required for crediting our partners when you visit gaming sites. This tracking is essential for our business operations and partner payments.',
+        savePreferences: 'Save Preferences'
       };
     }
   }
