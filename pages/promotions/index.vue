@@ -1,7 +1,9 @@
 <template>
     <div>
         <div class="container mx-auto pt-20">
-            <h1 class="text-center">{{ msgTranslate.promotions }}</h1>
+            <h1 class="text-center">
+                <TranslatedText translation-key="promotions" />
+            </h1>
         </div>
         <div class="container mx-auto">
             <div class="p-5 grid grid-cols-1 lg:grid-cols-2 my-10 bg-gray-300 shadow-black shadow-lg rounded-lg items-center"
@@ -16,7 +18,7 @@
                     <h5 class="py-4">{{ promo.subTitle }}</h5>
                     <a :href="regLink"
                         class="w-full md:w-3/6 text-center py-4 mt-2 px-8 text-gray-100 transition-colors duration-150 bg-gray-700 rounded-lg focus:shadow-outline hover:bg-gray-800 uppercase">
-                        {{ msgTranslate.see_more }}
+                        <TranslatedText translation-key="see_more" />
                     </a>
                 <div v-if="promo.disclaimer !== null">
                         <span v-html="promo.disclaimer" class="text-sm/[12px] py-5 text-slate-800/75"></span>

@@ -86,18 +86,17 @@ import { ref, onMounted, defineEmits, computed } from 'vue';
 import { 
     WHITELABEL_ID,
     games,
-    msgTranslate, 
-    regLink, 
-    loginLink,
     brandContent,
     fetchBrandContent,
     fetchGames,
     slotGames,
-    lang // Make sure to import lang if you're using it
+    lang
 } from '~/composables/globalData';
 import { getCacheKey, getCache, setCache } from '~/composables/useCache';
+import { useCookieConsent } from '~/composables/useCookieConsent';
 
 const brandId = computed(() => WHITELABEL_ID);
+const { regLink, loginLink } = useCookieConsent();
 const loading = ref(true);
 
 const cacheKey = computed(() => getCacheKey('slot-games', {

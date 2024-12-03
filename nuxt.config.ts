@@ -17,12 +17,17 @@ export default defineNuxtConfig({
     prerender: {
       fallback: true,
       crawlLinks: true,
-      routes: [] // Remove dynamic routes like '/blog'
+      routes: [
+        '/',
+        '/blog',
+        '/promotion'
+      ]
     }
   },
   routeRules: {
     '/**': { isr: true }, // Static pages with incremental regeneration
-    '/blog/**': { ssr: true } // Dynamic rendering for blog
+    '/blog/**': { ssr: true }, // Dynamic rendering for blog
+    '/promotion/**': { ssr: true }
   },
   css: ['~/assets/main.css'],
   modules: [

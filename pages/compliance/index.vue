@@ -5,7 +5,7 @@
                 <div class="g-btn-wrapper mt-10 md:mt-20 flex flex-wrap justify-center">
                     <button v-for="(value, key) in globalContent" :key="key" @click="handleClick(key)"
                         class="h-10 px-4 md:px-8 m-2 text-gray-100 transition-colors duration-150 bg-gray-700 rounded-lg focus:shadow-outline hover:bg-gray-800 uppercase text-xs md:text-base">
-                        {{ msgTranslate[value] ? msgTranslate[value] : value }}
+                        <TranslatedText :translation-key="value" />
                     </button>
                 </div>
 

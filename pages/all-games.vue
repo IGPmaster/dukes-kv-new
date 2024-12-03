@@ -32,7 +32,6 @@
           <select 
             v-model="selectedProvider" 
             @change="filterGames" 
-			:disabled="!msgTranslate"
             class="uppercase block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           >
             <option value="all"><TranslatedText translation-key="all_providers" loading-text="Loading..." /></option>
@@ -48,7 +47,6 @@
           <select 
             v-model="selectedSubProvider" 
             @change="filterGames" 
-			:disabled="!msgTranslate"
             class="block uppercase appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           >
             <option value="all"><TranslatedText translation-key="all_subproviders" loading-text="Loading..." /></option>
@@ -64,7 +62,6 @@
           <select 
             v-model="selectedGameType" 
             @change="filterGames" 
-			:disabled="!msgTranslate"
             class="block uppercase appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           >
             <option value="all"><TranslatedText translation-key="all_game_types" loading-text="Loading..." /></option>
@@ -113,16 +110,15 @@ import { ref, computed, onMounted } from 'vue';
 import { useHead } from '#imports';
 import { 
   games, 
-  msgTranslate, 
-  regLink, 
-  loginLink, 
-  playLink,
   brandContent,
   fetchBrandContent,
   fetchGames
 } from '~/composables/globalData';
 import { WHITELABEL_ID } from '~/composables/globalData'
+import { useCookieConsent } from '~/composables/useCookieConsent'
+
 const brandId = computed(() => WHITELABEL_ID)
+const { regLink, loginLink, playLink } = useCookieConsent()
 
 const selectedProvider = ref('all');
 const selectedSubProvider = ref('all');

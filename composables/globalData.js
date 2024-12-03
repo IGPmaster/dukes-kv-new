@@ -25,7 +25,7 @@ export const globalContent = ref({
 export const WHITELABEL_ID = 30;
 export const PP_API_URL = 'https://prd-api.casino-pp.net/CmSHelper/';
 const PP_PROMOTIONS_API = `${PP_API_URL}GetPromotionsInfo?whitelabelId=${WHITELABEL_ID}&country=`;
-const PP_LOBBY_LINK = 'https://dukescasino.casino-pp.net/';
+export const PP_LOBBY_LINK = 'https://dukescasino.casino-pp.net/';
 //const KV_GAMES = `https://content.progressplay.net/api23/api/game?whitelabelId=${WHITELABEL_ID}`; // Test API
 
 
@@ -228,19 +228,6 @@ export async function loadTranslations() {
       msgTranslate.value = {
         login: 'Login',
         sign_up: 'Sign Up',
-        // Cookie consent translations
-        cookieConsentText: 'We use cookies to ensure our partners are properly credited when you visit gaming sites. This is essential for our service operation and partner payments. We also use analytics cookies to improve our service.',
-        acceptAll: 'Accept All',
-        declineOptional: 'Decline Optional Cookies',
-        managePreferences: 'Manage Preferences',
-        cookiePreferences: 'Cookie Preferences',
-        cookieNecessary: 'Necessary Cookies',
-        cookieNecessaryDesc: 'Essential for website functionality.',
-        cookieAnalytics: 'Analytics Cookies',
-        cookieAnalyticsDesc: 'Help us improve our website performance',
-        cookieAffiliate: 'Affiliate Tracking',
-        cookieAffiliateDesc: 'Required for crediting our partners when you visit gaming sites. This tracking is essential for our business operations and partner payments.',
-        savePreferences: 'Save Preferences'
       };
     }
   }

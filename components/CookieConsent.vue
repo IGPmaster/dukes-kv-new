@@ -2,9 +2,18 @@
   <div v-if="showBanner" class="fixed bottom-0 left-0 right-0 bg-white p-4 border-t z-50">
     <div class="max-w-6xl mx-auto">
       <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-        <p class="text-xs text-gray-600 max-w-3xl">
-          We use cookies to ensure our partners are properly credited when you visit gaming sites. This is essential for our service operation and partner payments. We also use analytics cookies to improve our service.
-        </p>
+        <div class="space-y-2">
+          <p class="text-xs text-gray-600 max-w-3xl">
+            We use cookies to ensure our partners are properly credited when you visit gaming sites. This is essential for our service operation and partner payments. We also use analytics cookies to improve our service.
+          </p>
+          <p class="text-xs text-gray-500">
+            Read our 
+            <NuxtLink to="/compliance/cookies" class="underline hover:text-gray-700">Cookie Policy</NuxtLink>
+            and
+            <NuxtLink to="/compliance/privacy" class="underline hover:text-gray-700">Privacy Policy</NuxtLink>
+            for more information.
+          </p>
+        </div>
         <div class="flex gap-2">
           <button 
             class="bg-black hover:bg-gray-800 text-white px-4 py-1.5 rounded text-xs"
@@ -60,6 +69,13 @@
               </label>
             </div>
             <p class="text-xs text-gray-500">{{ category.description }}</p>
+          </div>
+
+          <div class="text-xs text-gray-500 mb-4">
+            For more information about how we use cookies, please read our 
+            <NuxtLink to="/compliance/cookies" class="underline hover:text-gray-700">Cookie Policy</NuxtLink>
+            and
+            <NuxtLink to="/compliance/privacy" class="underline hover:text-gray-700">Privacy Policy</NuxtLink>.
           </div>
 
           <button 

@@ -69,13 +69,7 @@ import {
     WHITELABEL_ID,
     brandContent,
     fetchBrandContent,
-    regLink,
     lang,
-    // Remove these if they're in globalData
-    // getCacheKey,
-    // getCache, 
-    // setCache,
-    // preloadImage
 } from '~/composables/globalData';
 
 // Import cache functions from useCache instead
@@ -85,6 +79,10 @@ import {
     setCache, 
     preloadImage 
 } from '~/composables/useCache';
+
+import { useCookieConsent } from '~/composables/useCookieConsent'
+
+const { regLink } = useCookieConsent()
 
 const brandId = computed(() => WHITELABEL_ID);
 const loading = ref(true);

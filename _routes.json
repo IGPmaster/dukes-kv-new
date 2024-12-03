@@ -1,8 +1,41 @@
 {
+  "version": 1,
   "include": [
     "/*"
   ],
   "exclude": [
-    "/blog/**"
+    "/build/*",
+    "/static/*",
+    "/_nuxt/*"
+  ],
+  "routes": [
+    {
+      "src": "/blog/.*",
+      "continue": true,
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "src": "/promotion/.*",
+      "continue": true,
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "src": "/blog",
+      "continue": true,
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "src": "/promotion",
+      "continue": true,
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    }
   ]
 }
