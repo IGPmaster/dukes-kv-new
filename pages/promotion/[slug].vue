@@ -169,56 +169,60 @@ onMounted(async () => {
     // Wait for language to be initialized
     await nextTick();
     
-    // Check if data is already loaded
+    // Try to fetch the specific promotion directly first
+    try {
+      const response = await fetch(
+        `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
+      );
+      
+      if (response.ok) {
+        promotion.value = await response.json();
+        return;
+      }
+    } catch (directFetchError) {
+      console.error('Error fetching specific promotion:', directFetchError);
+    }
+    
+    // If direct fetch fails, try to get it from the list
     if (!promotionsData.value?.length) {
       await fetchPromotions();
     }
     
     const foundPromotion = promotionsData.value.find(p => p.slug === slug);
-    
-    if (!foundPromotion) {
-      // Try to fetch the specific promotion directly
-      const response = await fetch(
-        `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
-      );
-      
-      if (!response.ok) {
-        error.value = true;
-        return;
-      }
-      
-      promotion.value = await response.json();
-      return;
+    if (foundPromotion) {
+      promotion.value = foundPromotion;
+    } else {
+      error.value = true;
     }
 
-    promotion.value = foundPromotion;
-
-    // Update SEO meta tags
-    useHead({
-      title: promotion.value.meta?.title || `${promotion.value.title} - Special Promotion`,
-      meta: [
-        {
-          name: 'description',
-          content: promotion.value.meta?.description || promotion.value.content?.short_description || ''
-        },
-        {
-          name: 'keywords',
-          content: promotion.value.meta?.keywords?.join(', ') || 'casino promotion, bonus, special offer'
-        },
-        {
-          property: 'og:title',
-          content: promotion.value.meta?.og_title || promotion.value.title
-        },
-        {
-          property: 'og:description',
-          content: promotion.value.meta?.og_description || promotion.value.content?.short_description || ''
-        },
-        {
-          property: 'og:image',
-          content: getImageUrl(promotion.value.images?.desktop?.url)
-        }
-      ]
-    });
+    // Update SEO meta tags if we have a promotion
+    if (promotion.value) {
+      useHead({
+        title: promotion.value.meta?.title || `${promotion.value.title} - Special Promotion`,
+        meta: [
+          {
+            name: 'description',
+            content: promotion.value.meta?.description || promotion.value.content?.short_description || ''
+          },
+          {
+            name: 'keywords',
+            content: promotion.value.meta?.keywords?.join(', ') || 'casino promotion, bonus, special offer'
+          },
+          {
+            property: 'og:title',
+            content: promotion.value.meta?.og_title || promotion.value.title
+          },
+          {
+            property: 'og:description',
+            content: promotion.value.meta?.og_description || promotion.value.content?.short_description || ''
+          },
+          {
+            property: 'og:image',
+            content: getImageUrl(promotion.value.images?.desktop?.url)
+          }
+        ]
+      });
+    }
   } catch (err) {
     console.error('Error fetching promotion:', err);
     error.value = true;
