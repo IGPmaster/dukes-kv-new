@@ -15,7 +15,8 @@ export default defineNuxtConfig({
       routes: [
         '/',
         '/blog',
-        '/promotion'
+        '/promotion',
+        '/promotion/halloween-deposit-bonus'
       ]
     }
   },
@@ -27,11 +28,9 @@ export default defineNuxtConfig({
     '/blog': { prerender: true },
     '/promotion': { prerender: true },
     '/blog/**': { 
-      static: false,
       ssr: true
     },
     '/promotion/**': { 
-      static: false,
       ssr: true
     }
   },
