@@ -130,6 +130,7 @@ import { fetchPromotions, promotionsData, lang, WHITELABEL_ID } from '~/composab
 
 const route = useRoute();
 const slug = route.params.slug;
+console.log('Slug from route:', slug);
 const promotion = ref(null);
 const loading = ref(true);
 const error = ref(false);
@@ -163,35 +164,44 @@ const promotionTypeDisplay = (type) => {
 
 // Fetch promotion data
 onMounted(async () => {
+  console.log('Component mounted, starting fetch...');
   loading.value = true;
   
   try {
-    // Wait for language to be initialized
     await nextTick();
+    console.log('After nextTick, attempting direct fetch...');
     
     // Try to fetch the specific promotion directly first
     try {
-      const response = await fetch(
-        `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
-      );
+      const url = `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`;
+      console.log('Fetching from URL:', url);
+      
+      const response = await fetch(url);
+      console.log('Direct fetch response:', response.status, response.ok);
       
       if (response.ok) {
         promotion.value = await response.json();
+        console.log('Direct fetch successful:', promotion.value);
         return;
       }
     } catch (directFetchError) {
-      console.error('Error fetching specific promotion:', directFetchError);
+      console.error('Direct fetch error:', directFetchError);
     }
     
+    console.log('Direct fetch failed, trying list approach...');
     // If direct fetch fails, try to get it from the list
     if (!promotionsData.value?.length) {
+      console.log('No promotions data, fetching list...');
       await fetchPromotions();
     }
     
     const foundPromotion = promotionsData.value.find(p => p.slug === slug);
+    console.log('Found in list:', foundPromotion);
+    
     if (foundPromotion) {
       promotion.value = foundPromotion;
     } else {
+      console.log('Promotion not found in either approach');
       error.value = true;
     }
 
@@ -224,9 +234,10 @@ onMounted(async () => {
       });
     }
   } catch (err) {
-    console.error('Error fetching promotion:', err);
+    console.error('Final error:', err);
     error.value = true;
   } finally {
+    console.log('Fetch attempt complete, loading:', loading.value);
     loading.value = false;
   }
 });

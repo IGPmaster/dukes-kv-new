@@ -49,19 +49,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useRuntimeConfig } from '#app';
-import { WHITELABEL_ID } from '~/composables/globalData'
-const brandId = computed(() => WHITELABEL_ID)
+import { WHITELABEL_ID, PROMOTIONS_WORKER_URL } from '~/composables/globalData'
 
 const route = useRoute();
 const config = useRuntimeConfig();
 const promotion = ref(null);
 const error = ref(null);
 
-// Get whitelabel ID and lang from your Nuxt config/state
-const whitelabelId = computed(() => config.public.whitelabelId);
+// Get lang from Nuxt config
 const lang = computed(() => config.public.lang);
 
 const formatDate = (dateString) => {
@@ -71,7 +69,7 @@ const formatDate = (dateString) => {
 onMounted(async () => {
   try {
     const response = await fetch(
-      `https://casino-promotions-api.tech1960.workers.dev/promotion?brandId=${whitelabelId.value}&lang=${lang.value}&slug=${route.params.slug}`
+      `${PROMOTIONS_WORKER_URL}/promotion?brandId=${WHITELABEL_ID}&lang=${lang.value}&slug=${route.params.slug}`
     );
     
     if (!response.ok) {

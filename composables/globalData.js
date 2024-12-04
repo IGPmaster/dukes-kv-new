@@ -34,8 +34,8 @@ const WP_API = 'https://headless.betdukes.com/wp-json/wp/v2/';
 
 //CloudFlare Workers KV data:
 const KV_WORKER_URL = 'https://worker-casino-brands.tech1960.workers.dev/';
-const PROMOTIONS_WORKER_URL = 'https://casino-promotions-api.tech1960.workers.dev';
-const PAGES_WORKER_URL = 'https://casino-pages-api.tech1960.workers.dev';
+export const PROMOTIONS_WORKER_URL = 'https://casino-promotions-api.tech1960.workers.dev';
+export const PAGES_WORKER_URL = 'https://casino-pages-api.tech1960.workers.dev';
 export const KV_GAMES = 'https://access-ppgames.tech1960.workers.dev/';
 export const FILTERED_BY_NAME_KV = 'https://access-filterbyname.tech1960.workers.dev/';
 const CF_GEO_WORKER = 'https://cf-geo-lookup.tech1960.workers.dev/';
@@ -559,5 +559,5 @@ export {
     countryNotSupported,
     fetchGames,
     getCookie, 
-    setCookie, 
+    setCookie,
 };
