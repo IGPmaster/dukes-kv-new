@@ -1,16 +1,15 @@
 {
   "version": 1,
   "include": ["/*"],
-  "exclude": [],
+  "exclude": [
+    "/_nuxt/*",
+    "/static/*",
+    "/api/*"
+  ],
   "routes": [
-    { 
-      "src": "/blog/(.*)",
-      "dest": "/blog/[slug]",
-      "status": 200
-    },
     {
-      "src": "/promotion/(.*)",
-      "dest": "/promotion/[slug]",
+      "src": "/.*",
+      "dest": "/200.html",
       "status": 200
     }
   ]
