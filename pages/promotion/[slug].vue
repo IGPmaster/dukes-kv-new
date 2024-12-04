@@ -179,7 +179,7 @@ onMounted(async () => {
     if (!foundPromotion) {
       // Try to fetch the specific promotion directly
       const response = await fetch(
-        `${PROMOTIONS_WORKER_URL}/promotions/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
+        `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
       );
       
       if (!response.ok) {
