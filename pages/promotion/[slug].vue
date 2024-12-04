@@ -123,17 +123,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useHead } from '#imports';
-import { fetchPromotions, promotionsData, lang, WHITELABEL_ID } from '~/composables/globalData';
+import { useHead, useAsyncData } from '#imports';
+import { WHITELABEL_ID, PROMOTIONS_WORKER_URL, lang } from '~/composables/globalData';
 
 const route = useRoute();
 const slug = route.params.slug;
-console.log('Slug from route:', slug);
-const promotion = ref(null);
-const loading = ref(true);
-const error = ref(false);
+console.log('ssr Slug from route:', slug);
 
 // Helper function to handle image URLs
 const getImageUrl = (url) => {
@@ -157,92 +154,57 @@ const promotionTypeDisplay = (type) => {
     seasonal: 'Seasonal Promotion',
     welcome: 'Welcome Offer',
     loyalty: 'Loyalty Reward'
-    // Add other mappings if needed
   };
   return typeKeys[type] || type;
 };
 
-// Fetch promotion data
-onMounted(async () => {
-  console.log('Component mounted, starting fetch...');
-  loading.value = true;
+async function fetchPromotion(slug) {
+  const response = await fetch(
+    `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
+  );
   
-  try {
-    await nextTick();
-    console.log('After nextTick, attempting direct fetch...');
-    
-    // Try to fetch the specific promotion directly first
-    try {
-      const url = `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`;
-      console.log('Fetching from URL:', url);
-      
-      const response = await fetch(url);
-      console.log('Direct fetch response:', response.status, response.ok);
-      
-      if (response.ok) {
-        promotion.value = await response.json();
-        console.log('Direct fetch successful:', promotion.value);
-        return;
-      }
-    } catch (directFetchError) {
-      console.error('Direct fetch error:', directFetchError);
-    }
-    
-    console.log('Direct fetch failed, trying list approach...');
-    // If direct fetch fails, try to get it from the list
-    if (!promotionsData.value?.length) {
-      console.log('No promotions data, fetching list...');
-      await fetchPromotions();
-    }
-    
-    const foundPromotion = promotionsData.value.find(p => p.slug === slug);
-    console.log('Found in list:', foundPromotion);
-    
-    if (foundPromotion) {
-      promotion.value = foundPromotion;
-    } else {
-      console.log('Promotion not found in either approach');
-      error.value = true;
-    }
-
-    // Update SEO meta tags if we have a promotion
-    if (promotion.value) {
-      useHead({
-        title: promotion.value.meta?.title || `${promotion.value.title} - Special Promotion`,
-        meta: [
-          {
-            name: 'description',
-            content: promotion.value.meta?.description || promotion.value.content?.short_description || ''
-          },
-          {
-            name: 'keywords',
-            content: promotion.value.meta?.keywords?.join(', ') || 'casino promotion, bonus, special offer'
-          },
-          {
-            property: 'og:title',
-            content: promotion.value.meta?.og_title || promotion.value.title
-          },
-          {
-            property: 'og:description',
-            content: promotion.value.meta?.og_description || promotion.value.content?.short_description || ''
-          },
-          {
-            property: 'og:image',
-            content: getImageUrl(promotion.value.images?.desktop?.url)
-          }
-        ]
-      });
-    }
-  } catch (err) {
-    console.error('Final error:', err);
-    error.value = true;
-  } finally {
-    console.log('Fetch attempt complete, loading:', loading.value);
-    loading.value = false;
+  if (!response.ok) {
+    throw new Error('Promotion not found');
   }
-});
+  
+  return await response.json();
+}
 
-// Claim Offer function (customizable logic for the CTA button)
+const { data: promotion, error, pending: loading } = await useAsyncData(
+  `promotion-${slug}`,
+  () => fetchPromotion(slug)
+);
+
+// Set meta tags when promotion data is available
+if (promotion.value) {
+  useHead({
+    title: promotion.value.meta?.title || `${promotion.value.title} - Special Promotion`,
+    meta: [
+      {
+        name: 'description',
+        content: promotion.value.meta?.description || promotion.value.content?.short_description || ''
+      },
+      {
+        name: 'keywords',
+        content: promotion.value.meta?.keywords?.join(', ') || 'casino promotion, bonus, special offer'
+      },
+      {
+        property: 'og:title',
+        content: promotion.value.meta?.og_title || promotion.value.title
+      },
+      {
+        property: 'og:description',
+        content: promotion.value.meta?.og_description || promotion.value.content?.short_description || ''
+      },
+      {
+        property: 'og:image',
+        content: getImageUrl(promotion.value.images?.desktop?.url)
+      }
+    ]
+  });
+}
+
+// Claim Offer function
 const claimOffer = (promo) => {
   console.log(`Claiming offer for promotion: ${promo.title}`);
   // Implement additional logic for claim offer action
