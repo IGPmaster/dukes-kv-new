@@ -4,8 +4,8 @@
 /api/* /api/:splat 200
 
 # Handle dynamic routes explicitly
-/promotion/* /index.html 200
-/blog/* /index.html 200
+/promotion/* /_routes.json 200
+/blog/* /_routes.json 200
 
 # Handle other static files
 /*.js /:splat 200
@@ -13,4 +13,4 @@
 /*.json /:splat 200
 
 # SPA fallback for everything else
-/* /index.html 200
+/* /_routes.json 200
