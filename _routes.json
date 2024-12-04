@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [],
+  "routes": [
+    { 
+      "src": "/blog/(.*)",
+      "dest": "/blog/[slug]",
+      "status": 200
+    },
+    {
+      "src": "/promotion/(.*)",
+      "dest": "/promotion/[slug]",
+      "status": 200
+    }
+  ]
+} 
