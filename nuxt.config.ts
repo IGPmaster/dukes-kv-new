@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  ssr: true,
   router: {
     trailingSlash: false
   },
@@ -19,19 +20,19 @@ export default defineNuxtConfig({
     }
   },
   experimental: {
-    payloadExtraction: true
+    payloadExtraction: false
   },
   routeRules: {
     '/': { prerender: true },
     '/blog': { prerender: true },
     '/promotion': { prerender: true },
     '/blog/**': { 
-      ssr: true,
-      swr: true
+      static: false,
+      ssr: true
     },
     '/promotion/**': { 
-      ssr: true,
-      swr: true
+      static: false,
+      ssr: true
     }
   },
   css: ['~/assets/main.css'],
