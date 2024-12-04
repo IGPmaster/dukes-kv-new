@@ -25,12 +25,12 @@ export default defineNuxtConfig({
     '/': { prerender: true },
     '/blog': { prerender: true },
     '/promotion': { prerender: true },
-    '/blog/*': { 
-      prerender: false,
+    '/blog/**': { 
+      ssr: true,
       swr: true
     },
-    '/promotion/*': { 
-      prerender: false,
+    '/promotion/**': { 
+      ssr: true,
       swr: true
     }
   },

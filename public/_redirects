@@ -3,5 +3,5 @@
 /static/* /static/:splat 200
 /api/* /api/:splat 200
 
-# SPA fallback for dynamic routes and all other paths
-/* / 200
+# Handle all paths with SPA fallback
+/* /index.html 200
