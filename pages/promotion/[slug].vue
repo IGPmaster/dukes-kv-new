@@ -162,15 +162,19 @@ const promotionTypeDisplay = (type) => {
 
 async function fetchPromotion(slug) {
   try {
+    console.log('Fetching promotion:', slug);
     const response = await fetch(
       `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`
     );
     
     if (!response.ok) {
+      console.log('Promotion fetch failed:', response.status);
       throw new Error('Promotion not found');
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log('Promotion data:', data);
+    return data;
   } catch (error) {
     console.error('Error fetching promotion:', error);
     throw error;

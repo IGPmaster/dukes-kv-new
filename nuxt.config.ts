@@ -33,10 +33,7 @@ export default defineNuxtConfig({
       }
     },
     '/promotion/**': { 
-      ssr: true,
-      cache: {
-        maxAge: 60 * 60 // 1 hour cache
-      }
+      ssr: true
     }
   },
   css: ['~/assets/main.css'],
