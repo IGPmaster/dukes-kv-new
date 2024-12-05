@@ -123,14 +123,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
-import { useHead, useAsyncData } from '#imports';
-import { WHITELABEL_ID, PROMOTIONS_WORKER_URL, lang } from '~/composables/globalData';
+import { useHead } from '#imports';
+import { fetchPromotions, promotionsData, lang, WHITELABEL_ID } from '~/composables/globalData';
 
 const route = useRoute();
 const slug = route.params.slug;
-console.log('ssr Slug from route:', slug);
+const promotion = ref(null);
+const loading = ref(true);
+const error = ref(false);
 
 // Helper function to handle image URLs
 const getImageUrl = (url) => {
@@ -154,57 +156,78 @@ const promotionTypeDisplay = (type) => {
     seasonal: 'Seasonal Promotion',
     welcome: 'Welcome Offer',
     loyalty: 'Loyalty Reward'
+    // Add other mappings if needed
   };
   return typeKeys[type] || type;
 };
 
-async function fetchPromotion(slug) {
-  const response = await fetch(
-    `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
-  );
+// Fetch promotion data
+onMounted(async () => {
+  loading.value = true;
   
-  if (!response.ok) {
-    throw new Error('Promotion not found');
-  }
-  
-  return await response.json();
-}
-
-const { data: promotion, error, pending: loading } = await useAsyncData(
-  `promotion-${slug}`,
-  () => fetchPromotion(slug)
-);
-
-// Set meta tags when promotion data is available
-if (promotion.value) {
-  useHead({
-    title: promotion.value.meta?.title || `${promotion.value.title} - Special Promotion`,
-    meta: [
-      {
-        name: 'description',
-        content: promotion.value.meta?.description || promotion.value.content?.short_description || ''
-      },
-      {
-        name: 'keywords',
-        content: promotion.value.meta?.keywords?.join(', ') || 'casino promotion, bonus, special offer'
-      },
-      {
-        property: 'og:title',
-        content: promotion.value.meta?.og_title || promotion.value.title
-      },
-      {
-        property: 'og:description',
-        content: promotion.value.meta?.og_description || promotion.value.content?.short_description || ''
-      },
-      {
-        property: 'og:image',
-        content: getImageUrl(promotion.value.images?.desktop?.url)
+  try {
+    // Wait for language to be initialized
+    await nextTick();
+    
+    // Check if data is already loaded
+    if (!promotionsData.value?.length) {
+      await fetchPromotions();
+    }
+    
+    const foundPromotion = promotionsData.value.find(p => p.slug === slug);
+    
+    if (!foundPromotion) {
+      // Try to fetch the specific promotion directly
+      const response = await fetch(
+        `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
+      );
+      
+      if (!response.ok) {
+        error.value = true;
+        return;
       }
-    ]
-  });
-}
+      
+      promotion.value = await response.json();
+      return;
+    }
 
-// Claim Offer function
+    promotion.value = foundPromotion;
+
+    // Update SEO meta tags
+    useHead({
+      title: promotion.value.meta?.title || `${promotion.value.title} - Special Promotion`,
+      meta: [
+        {
+          name: 'description',
+          content: promotion.value.meta?.description || promotion.value.content?.short_description || ''
+        },
+        {
+          name: 'keywords',
+          content: promotion.value.meta?.keywords?.join(', ') || 'casino promotion, bonus, special offer'
+        },
+        {
+          property: 'og:title',
+          content: promotion.value.meta?.og_title || promotion.value.title
+        },
+        {
+          property: 'og:description',
+          content: promotion.value.meta?.og_description || promotion.value.content?.short_description || ''
+        },
+        {
+          property: 'og:image',
+          content: getImageUrl(promotion.value.images?.desktop?.url)
+        }
+      ]
+    });
+  } catch (err) {
+    console.error('Error fetching promotion:', err);
+    error.value = true;
+  } finally {
+    loading.value = false;
+  }
+});
+
+// Claim Offer function (customizable logic for the CTA button)
 const claimOffer = (promo) => {
   console.log(`Claiming offer for promotion: ${promo.title}`);
   // Implement additional logic for claim offer action
