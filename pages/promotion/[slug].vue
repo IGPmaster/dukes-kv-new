@@ -183,41 +183,23 @@ async function fetchPromotion(slug) {
 
 onMounted(async () => {
   try {
-    const data = await fetchPromotion(slug);
-    promotion.value = data;
-    
-    if (data) {
-      useHead({
-        title: data.meta?.title || `${data.title} - Special Promotion`,
-        meta: [
-          {
-            name: 'description',
-            content: data.meta?.description || data.content?.short_description || ''
-          },
-          {
-            name: 'keywords',
-            content: data.meta?.keywords?.join(', ') || 'casino promotion, bonus, special offer'
-          },
-          {
-            property: 'og:title',
-            content: data.meta?.og_title || data.title
-          },
-          {
-            property: 'og:description',
-            content: data.meta?.og_description || data.content?.short_description || ''
-          },
-          {
-            property: 'og:image',
-            content: getImageUrl(data.images?.desktop?.url)
-          }
-        ]
-      });
-    }
+    promotion.value = await fetchPromotion(slug);
   } catch (err) {
-    error.value = true;
+    error.value = err.message;
   } finally {
     loading.value = false;
   }
+});
+
+// SEO
+useHead({
+  title: promotion.value?.title || 'Promotion',
+  meta: [
+    {
+      name: 'description',
+      content: promotion.value?.description || 'View our latest casino promotion'
+    }
+  ]
 });
 
 // Claim Offer function (customizable logic for the CTA button)
