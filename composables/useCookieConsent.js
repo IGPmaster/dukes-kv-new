@@ -65,7 +65,6 @@ export function useCookieConsent() {
   };
 
   const updateLobbyLinks = (tracker) => {
-    console.log('Updating lobby links with tracker:', tracker);
     
     if (!tracker) {
       tracker = getTrackerFromURL() || getCookie('affiliateTracker');

@@ -124,7 +124,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, navigateTo } from '#imports';
 import { useHead } from '#imports';
 import { WHITELABEL_ID, PROMOTIONS_WORKER_URL, lang } from '~/composables/globalData';
 
@@ -133,6 +133,15 @@ const slug = route.params.slug;
 const promotion = ref(null);
 const loading = ref(true);
 const error = ref(false);
+
+// Handle trailing slash redirect on server-side
+if (process.server) {
+  const currentPath = route.path;
+  if (!currentPath.endsWith('/')) {
+    console.log('Server-side: redirecting to path with trailing slash');
+    navigateTo(currentPath + '/', { redirectCode: 301 });
+  }
+}
 
 // Helper function to handle image URLs
 const getImageUrl = (url) => {
