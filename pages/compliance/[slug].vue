@@ -5,10 +5,8 @@
             <div class="px-4">
                 <NuxtLink to="/compliance" class="flex justify-center gap-4 p-2 border rounded border-primary text-gray-800 text-center w-1/2 md:w-1/5 cursor-pointer">
                     <i class="material-icons">arrow_back</i>
-                    <h1 class="text-center">
-                        <TranslatedText translation-key="legal" />
-                    </h1>
-                </NuxtLink>
+                    {{ msgTranslate.legal }}
+                      </NuxtLink>
                 <div class="">
                     <div v-html="htmlContent"></div>
                 </div>
