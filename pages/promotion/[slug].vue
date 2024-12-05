@@ -123,10 +123,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useHead } from '#imports';
-import { fetchPromotions, promotionsData, lang, WHITELABEL_ID } from '~/composables/globalData';
+import { WHITELABEL_ID, PROMOTIONS_WORKER_URL, lang } from '~/composables/globalData';
 
 const route = useRoute();
 const slug = route.params.slug;
@@ -156,71 +156,60 @@ const promotionTypeDisplay = (type) => {
     seasonal: 'Seasonal Promotion',
     welcome: 'Welcome Offer',
     loyalty: 'Loyalty Reward'
-    // Add other mappings if needed
   };
   return typeKeys[type] || type;
 };
 
-// Fetch promotion data
-onMounted(async () => {
-  loading.value = true;
-  
+async function fetchPromotion(slug) {
   try {
-    // Wait for language to be initialized
-    await nextTick();
+    const response = await fetch(
+      `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`
+    );
     
-    // Check if data is already loaded
-    if (!promotionsData.value?.length) {
-      await fetchPromotions();
+    if (!response.ok) {
+      throw new Error('Promotion not found');
     }
     
-    const foundPromotion = promotionsData.value.find(p => p.slug === slug);
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching promotion:', error);
+    throw error;
+  }
+}
+
+onMounted(async () => {
+  try {
+    const data = await fetchPromotion(slug);
+    promotion.value = data;
     
-    if (!foundPromotion) {
-      // Try to fetch the specific promotion directly
-      const response = await fetch(
-        `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
-      );
-      
-      if (!response.ok) {
-        error.value = true;
-        return;
-      }
-      
-      promotion.value = await response.json();
-      return;
+    if (data) {
+      useHead({
+        title: data.meta?.title || `${data.title} - Special Promotion`,
+        meta: [
+          {
+            name: 'description',
+            content: data.meta?.description || data.content?.short_description || ''
+          },
+          {
+            name: 'keywords',
+            content: data.meta?.keywords?.join(', ') || 'casino promotion, bonus, special offer'
+          },
+          {
+            property: 'og:title',
+            content: data.meta?.og_title || data.title
+          },
+          {
+            property: 'og:description',
+            content: data.meta?.og_description || data.content?.short_description || ''
+          },
+          {
+            property: 'og:image',
+            content: getImageUrl(data.images?.desktop?.url)
+          }
+        ]
+      });
     }
-
-    promotion.value = foundPromotion;
-
-    // Update SEO meta tags
-    useHead({
-      title: promotion.value.meta?.title || `${promotion.value.title} - Special Promotion`,
-      meta: [
-        {
-          name: 'description',
-          content: promotion.value.meta?.description || promotion.value.content?.short_description || ''
-        },
-        {
-          name: 'keywords',
-          content: promotion.value.meta?.keywords?.join(', ') || 'casino promotion, bonus, special offer'
-        },
-        {
-          property: 'og:title',
-          content: promotion.value.meta?.og_title || promotion.value.title
-        },
-        {
-          property: 'og:description',
-          content: promotion.value.meta?.og_description || promotion.value.content?.short_description || ''
-        },
-        {
-          property: 'og:image',
-          content: getImageUrl(promotion.value.images?.desktop?.url)
-        }
-      ]
-    });
   } catch (err) {
-    console.error('Error fetching promotion:', err);
     error.value = true;
   } finally {
     loading.value = false;

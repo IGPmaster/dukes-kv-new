@@ -81,9 +81,10 @@
 
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { fetchBlogPosts, blogPosts, lang } from '~/composables/globalData';
+import { useHead } from '#imports';
+import { WHITELABEL_ID, PAGES_WORKER_URL, lang } from '~/composables/globalData';
 
 const route = useRoute();
 const slug = route.params.slug;
@@ -96,37 +97,56 @@ const getImageUrl = (url) => {
   return url;
 };
 
-onMounted(async () => {
-  loading.value = true;
-  
+async function fetchBlogPost(slug) {
   try {
-    // Wait for language to be initialized
-    await nextTick();
+    const response = await fetch(
+      `${PAGES_WORKER_URL}/api/pages/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`
+    );
     
-    if (!blogPosts.value?.length) {
-      await fetchBlogPosts();
+    if (!response.ok) {
+      throw new Error('Blog post not found');
     }
     
-    const foundPost = blogPosts.value.find(p => p.slug === slug);
-    
-    if (!foundPost) {
-      // Try to fetch the specific post directly
-      const response = await fetch(
-        `${PAGES_WORKER_URL}/api/pages/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
-      );
-      
-      if (!response.ok) {
-        error.value = true;
-        return;
-      }
-      
-      post.value = await response.json();
-      return;
-    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
+    throw error;
+  }
+}
 
-    post.value = foundPost;
+onMounted(async () => {
+  try {
+    const data = await fetchBlogPost(slug);
+    post.value = data;
+    
+    if (data) {
+      useHead({
+        title: data.meta?.title || `${data.title} - Blog Post`,
+        meta: [
+          {
+            name: 'description',
+            content: data.meta?.description || data.content?.excerpt || ''
+          },
+          {
+            name: 'keywords',
+            content: data.meta?.keywords?.join(', ') || 'blog, casino blog, gaming news'
+          },
+          {
+            property: 'og:title',
+            content: data.meta?.og_title || data.title
+          },
+          {
+            property: 'og:description',
+            content: data.meta?.og_description || data.content?.excerpt || ''
+          },
+          {
+            property: 'og:image',
+            content: getImageUrl(data.images?.banner?.url)
+          }
+        ]
+      });
+    }
   } catch (err) {
-    console.error('Error loading blog post:', err);
     error.value = true;
   } finally {
     loading.value = false;
