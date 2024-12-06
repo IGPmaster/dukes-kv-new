@@ -69,7 +69,7 @@ const formatDate = (dateString) => {
 onMounted(async () => {
   try {
     const response = await fetch(
-      `${PROMOTIONS_WORKER_URL}/promotion?brandId=${WHITELABEL_ID}&lang=${lang.value}&slug=${route.params.slug}`
+      `${PROMOTIONS_WORKER_URL}/api/promotion/${route.params.slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
     );
     
     if (!response.ok) {
