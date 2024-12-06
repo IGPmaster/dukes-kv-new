@@ -160,16 +160,19 @@ const promotionTypeDisplay = (type) => {
 // Updated fetch function to use new API structure
 async function fetchPromotion(slug) {
   try {
-    console.log('Fetching promotion:', slug);
+    console.log('Current URL:', window.location.href);
+    console.log('PROMOTIONS_WORKER_URL:', PROMOTIONS_WORKER_URL);
+    console.log('API_URL:', API_URL);
     
+    const fullUrl = `${API_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`;
+    console.log('Attempting to fetch from:', fullUrl);
+
     // Add error check for required params
     if (!slug || !WHITELABEL_ID) {
       throw new Error('Missing required parameters');
     }
 
-    const response = await fetch(
-      `${API_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`
-    );
+    const response = await fetch(fullUrl);  // Use the constructed URL
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
