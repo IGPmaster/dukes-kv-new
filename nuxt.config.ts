@@ -15,15 +15,12 @@ export default defineNuxtConfig({
       routes: [
         '/',
         '/blog',
-        '/promotions'  // Changed from /promotion to /promotions
+        '/promotion'
       ]
     },
-    // Add proxy configuration for API
     routeRules: {
-      '/promotion/**': { 
-        ssr: true,
-        swr: true,
-        maxAge: 0 // Disable caching for now while debugging
+      '/api/promotion/**': {
+        proxy: 'https://casino-promotions-api.tech1960.workers.dev/api/promotion/**'
       }
     }
   },
@@ -33,20 +30,15 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { prerender: true },
     '/blog': { prerender: true },
-    '/promotion': { prerender: true },  // Changed from /promotion
+    '/promotion': { prerender: true },
     '/blog/**': { 
       ssr: true,
       cache: {
-        maxAge: 60 * 60 // 1 hour cache
+        maxAge: 60 * 60
       }
     },
-    '/promotion/**': {  // Changed from /promotion/**
-      ssr: true,
-      // Add SWR (stale-while-revalidate) for better performance
-      cache: {
-        swr: true,
-        maxAge: 60 * 10 // 10 minutes cache
-      }
+    '/promotion/**': {
+      ssr: true
     }
   },
   // Rest of your config stays the same
