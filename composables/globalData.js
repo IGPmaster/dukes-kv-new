@@ -307,11 +307,10 @@ export async function fetchBrandContent() {
   }
 }
 
-// Add new function for actual promotions
 export async function fetchPromotions() {
   try {
     const response = await fetch(
-      `${PROMOTIONS_WORKER_URL}/promotions?brandId=${WHITELABEL_ID}&lang=${lang.value}`
+      `${PROMOTIONS_WORKER_URL}/api/promotions?brandId=${WHITELABEL_ID}&lang=${lang.value}`
     );
 
     if (!response.ok) {
@@ -333,10 +332,19 @@ export async function fetchPromotion(slug) {
     const found = promotionsData.value.find(p => p.slug === slug);
     if (found) return found;
 
-    // If not, fetch all promotions (they might have been updated)
-    await fetchPromotions();
-    
-    return promotionsData.value.find(p => p.slug === slug) || null;
+    // If not, fetch the specific promotion directly (new API endpoint)
+    const response = await fetch(
+      `${PROMOTIONS_WORKER_URL}/api/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value}`
+    );
+
+    if (!response.ok) {
+      // If direct fetch fails, fall back to fetching all promotions
+      await fetchPromotions();
+      return promotionsData.value.find(p => p.slug === slug) || null;
+    }
+
+    const promotion = await response.json();
+    return promotion;
   } catch (error) {
     console.error('Error fetching single promotion:', error);
     return null;

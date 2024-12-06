@@ -124,8 +124,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from '#imports';
-import { useHead } from '#imports';
+import { useRoute, useHead } from '#imports';
 import { WHITELABEL_ID, PROMOTIONS_WORKER_URL, lang } from '~/composables/globalData';
 
 const route = useRoute();
@@ -134,13 +133,12 @@ const promotion = ref(null);
 const loading = ref(true);
 const error = ref(false);
 
-// Helper function to handle image URLs
+// Your existing helper functions stay the same
 const getImageUrl = (url) => {
   if (!url) return '/images/placeholder-promotion.jpg';
   return url;
 };
 
-// Date formatting function
 const formatDate = (dateString) => {
   if (!dateString) return '';
   return new Date(dateString).toLocaleDateString(undefined, {
@@ -150,7 +148,6 @@ const formatDate = (dateString) => {
   });
 };
 
-// Display promotion type key
 const promotionTypeDisplay = (type) => {
   const typeKeys = {
     seasonal: 'Seasonal Promotion',
@@ -160,19 +157,37 @@ const promotionTypeDisplay = (type) => {
   return typeKeys[type] || type;
 };
 
+// Updated fetch function to use new API structure
 async function fetchPromotion(slug) {
   try {
     console.log('Fetching promotion:', slug);
+    
+    // Add error check for required params
+    if (!slug || !WHITELABEL_ID) {
+      throw new Error('Missing required parameters');
+    }
+
     const response = await fetch(
-      `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`
+      `${PROMOTIONS_WORKER_URL}/api/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`
     );
     
     if (!response.ok) {
-      console.log('Promotion fetch failed:', response.status);
-      throw new Error('Promotion not found');
+      const errorData = await response.json().catch(() => ({}));
+      console.log('Promotion fetch failed:', response.status, errorData);
+      
+      if (response.status === 404) {
+        throw new Error('Promotion not found');
+      }
+      throw new Error(errorData.error || 'Failed to fetch promotion');
     }
     
     const data = await response.json();
+    
+    // Validate required promotion data
+    if (!data || !data.title) {
+      throw new Error('Invalid promotion data received');
+    }
+    
     console.log('Promotion data:', data);
     return data;
   } catch (error) {
@@ -181,29 +196,33 @@ async function fetchPromotion(slug) {
   }
 }
 
+// Updated mounted hook with better error handling
 onMounted(async () => {
   try {
+    loading.value = true;
     promotion.value = await fetchPromotion(slug);
+    
+    // Update SEO meta after data is loaded
+    useHead({
+      title: promotion.value?.title || 'Promotion',
+      meta: [
+        {
+          name: 'description',
+          content: promotion.value?.content?.short_description || 'View our latest casino promotion'
+        }
+      ]
+    });
   } catch (err) {
-    error.value = err.message;
+    error.value = true;
+    console.error('Failed to load promotion:', err);
   } finally {
     loading.value = false;
   }
 });
 
-// SEO
-useHead({
-  title: promotion.value?.title || 'Promotion',
-  meta: [
-    {
-      name: 'description',
-      content: promotion.value?.description || 'View our latest casino promotion'
-    }
-  ]
-});
-
-// Claim Offer function (customizable logic for the CTA button)
+// Claim Offer function with type safety
 const claimOffer = (promo) => {
+  if (!promo || !promo.title) return;
   console.log(`Claiming offer for promotion: ${promo.title}`);
   // Implement additional logic for claim offer action
 };

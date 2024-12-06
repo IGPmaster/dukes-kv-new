@@ -15,8 +15,14 @@ export default defineNuxtConfig({
       routes: [
         '/',
         '/blog',
-        '/promotion'
+        '/promotions'  // Changed from /promotion to /promotions
       ]
+    },
+    // Add proxy configuration for API
+    routeRules: {
+      '/api/**': {
+        proxy: `${process.env.PROMOTIONS_WORKER_URL}/api/**`
+      }
     }
   },
   experimental: {
@@ -25,17 +31,23 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { prerender: true },
     '/blog': { prerender: true },
-    '/promotion': { prerender: true },
+    '/promotion': { prerender: true },  // Changed from /promotion
     '/blog/**': { 
       ssr: true,
       cache: {
         maxAge: 60 * 60 // 1 hour cache
       }
     },
-    '/promotion/**': { 
-      ssr: true
+    '/promotion/**': {  // Changed from /promotion/**
+      ssr: true,
+      // Add SWR (stale-while-revalidate) for better performance
+      cache: {
+        swr: true,
+        maxAge: 60 * 10 // 10 minutes cache
+      }
     }
   },
+  // Rest of your config stays the same
   css: ['~/assets/main.css'],
   modules: [
     '@nuxtjs/tailwindcss',
@@ -72,9 +84,15 @@ export default defineNuxtConfig({
     },
     pageTransition: { name: 'page', mode: 'out-in' }
   },
-  hooks: {
+ hooks: {
     'app:created': async () => {
       await loadTranslations()
+    }
+  },
+  // Add runtime config for API URL
+  runtimeConfig: {
+    public: {
+      promotionsWorkerUrl: process.env.PROMOTIONS_WORKER_URL
     }
   }
 });
