@@ -168,7 +168,7 @@ async function fetchPromotion(slug) {
     }
 
     const response = await fetch(
-      `${PROMOTIONS_WORKER_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`
+      `${PROMOTIONS_WORKER_URL}/api/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`
     );
     
     if (!response.ok) {
