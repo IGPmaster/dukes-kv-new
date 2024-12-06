@@ -123,6 +123,9 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: ['promotion']
+});
 import { ref, onMounted } from 'vue';
 import { useRoute, useHead } from '#imports';
 import { WHITELABEL_ID, PROMOTIONS_WORKER_URL, API_URL, lang } from '~/composables/globalData';
