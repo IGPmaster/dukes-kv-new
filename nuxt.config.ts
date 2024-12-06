@@ -20,8 +20,10 @@ export default defineNuxtConfig({
     },
     // Add proxy configuration for API
     routeRules: {
-      '/api/**': {
-        proxy: `${process.env.PROMOTIONS_WORKER_URL}/api/**`
+      '/promotion/**': { 
+        ssr: true,
+        swr: true,
+        maxAge: 0 // Disable caching for now while debugging
       }
     }
   },
