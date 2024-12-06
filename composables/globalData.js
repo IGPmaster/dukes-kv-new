@@ -35,6 +35,7 @@ const WP_API = 'https://headless.betdukes.com/wp-json/wp/v2/';
 //CloudFlare Workers KV data:
 const KV_WORKER_URL = 'https://worker-casino-brands.tech1960.workers.dev/';
 export const PROMOTIONS_WORKER_URL = 'https://casino-promotions-api.tech1960.workers.dev';
+export const API_URL = `${PROMOTIONS_WORKER_URL}/api`;
 export const PAGES_WORKER_URL = 'https://casino-pages-api.tech1960.workers.dev';
 export const KV_GAMES = 'https://access-ppgames.tech1960.workers.dev/';
 export const FILTERED_BY_NAME_KV = 'https://access-filterbyname.tech1960.workers.dev/';
@@ -310,7 +311,7 @@ export async function fetchBrandContent() {
 export async function fetchPromotions() {
   try {
     const response = await fetch(
-      `${PROMOTIONS_WORKER_URL}/api/promotions?brandId=${WHITELABEL_ID}&lang=${lang.value}`
+      `${API_URL}/promotions?brandId=${WHITELABEL_ID}&lang=${lang.value}`
     );
 
     if (!response.ok) {

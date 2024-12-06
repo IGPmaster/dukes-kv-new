@@ -125,7 +125,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useHead } from '#imports';
-import { WHITELABEL_ID, PROMOTIONS_WORKER_URL, lang } from '~/composables/globalData';
+import { WHITELABEL_ID, PROMOTIONS_WORKER_URL, API_URL, lang } from '~/composables/globalData';
 
 const route = useRoute();
 const slug = route.params.slug;
@@ -168,7 +168,7 @@ async function fetchPromotion(slug) {
     }
 
     const response = await fetch(
-      `${PROMOTIONS_WORKER_URL}/api/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`
+      `${API_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`
     );
     
     if (!response.ok) {
