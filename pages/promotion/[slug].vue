@@ -167,7 +167,7 @@ async function fetchPromotion(slug) {
     console.log('PROMOTIONS_WORKER_URL:', PROMOTIONS_WORKER_URL);
     console.log('API_URL:', API_URL);
     
-    const fullUrl = `${API_URL}/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`;
+    const fullUrl = `https://casino-promotions-api.tech1960.workers.dev/api/promotion/${slug}?brandId=${WHITELABEL_ID}&lang=${lang.value || 'IE'}`;
     console.log('Attempting to fetch from:', fullUrl);
 
     // Add error check for required params
