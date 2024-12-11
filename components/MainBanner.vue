@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading" class="loading-placeholder">
+  <div v-if="loading" class="loading-placeholder min-h-[400px] bg-tertiary_dark">
     <svg class="spinner" viewBox="0 0 50 50">
       <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="3"></circle>
     </svg>
@@ -56,6 +56,8 @@
             class="lg:w-2/5 w-7/8 place-items-center" 
             src="/images/PP-EN_red.svg"
             alt="100% Licensed and fast payouts" 
+            width="400"
+            height="60"
           />
         </div>
       </div>
@@ -168,26 +170,20 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.banner-container {
-  aspect-ratio: 1920/400;
-  /* Match your image dimensions */
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-}
-.banner-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  /* Remove default img spacing */
-}
 .loading-placeholder {
-  position: absolute;
+  position: relative;
   width: 100%;
-  height: 100%;
-  background: #f0f0f0;
-  /* Light grey or your theme color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--tertiary-dark);
 }
+
+.banner-image {
+  display: block;
+  height: auto;
+}
+
 .spinner {
   animation: rotate 2s linear infinite;
   z-index: 2;
@@ -198,16 +194,19 @@ onMounted(async () => {
   width: 50px;
   height: 50px;
 }
+
 .spinner .path {
   stroke: white;
   stroke-linecap: round;
   animation: dash 1.5s ease-in-out infinite;
 }
+
 @keyframes rotate {
   100% {
     transform: rotate(360deg);
   }
 }
+
 @keyframes dash {
   0% {
     stroke-dasharray: 1, 150;
@@ -224,14 +223,16 @@ onMounted(async () => {
     stroke-dashoffset: -124;
   }
 }
+
 .sig_terms :deep(p) {
   @apply font-light text-xs text-primary;
 }
+
 .sig_terms :deep(p a) {
   @apply text-primary hover:text-primary/90;
 }
+
 .sig_terms :deep(p strong) {
   @apply font-medium;
 }
-
 </style>
