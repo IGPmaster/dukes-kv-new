@@ -1,5 +1,11 @@
 import { ref } from 'vue';
 
+// Site-specific configuration
+export const SITE_CONFIG = {
+    siteName: 'Dukes Casino',
+    gtmId: 'GTM-5SZ64RP',
+};
+
 export const lang = ref('');
 export const tracker = ref('');
 export const jurisdictionCode = ref('');
@@ -362,6 +368,45 @@ export async function fetchFilterByName() {
   }
 }
 
+export async function updateLinks() {
+  if (typeof window === 'undefined') return;
+
+  const params = new URLSearchParams(window.location.search);
+  const btag = params.get('btag');
+  const affid = params.get('affid');
+
+  // Get consent status
+  let hasAffiliateConsent = false;
+  try {
+    const consentData = localStorage.getItem('cookieConsent');
+    if (consentData) {
+      const { preferences } = JSON.parse(consentData);
+      hasAffiliateConsent = preferences.affiliate;
+    }
+  } catch (e) {
+    console.error('Error reading consent:', e);
+  }
+
+  // Only get tracker if affiliate consent is given
+  let tracker = null;
+  if (hasAffiliateConsent) {
+    tracker = params.get('tracker') || getCookie('affiliateTracker');
+  }
+
+  // Build query string
+  const queryParts = [
+    tracker ? `tracker=${tracker}` : '',
+    btag ? `btag=${btag}` : '',
+    affid ? `affid=${affid}` : ''
+  ].filter(Boolean);
+
+  const queryStringParams = queryParts.join('&');
+
+  regLink.value = `${PP_LOBBY_LINK}${queryStringParams ? '?' + queryStringParams : ''}#registration`;
+  loginLink.value = `${PP_LOBBY_LINK}${queryStringParams ? '?' + queryStringParams : ''}#login`;
+  playLink.value = `${PP_LOBBY_LINK}${queryStringParams ? '?' + queryStringParams : ''}#play/`;
+}
+
 async function fetchGames() {
   try {
     await fetchFilterByName();
@@ -391,42 +436,10 @@ async function fetchGames() {
     blackjackGames.value = filteredGames.filter(game => game.gameFilters?.includes('Blackjack'));
 	  rouletteGames.value = filteredGames.filter(game => game.gameFilters?.includes('Roulette'));
 
-      async function updateLinks() {
-  const tracker = await handleParameter('tracker');
-  const btag = await handleParameter('btag');
-  const affid = await handleParameter('affid');
-  const lang = getCookie('lang');
-
-  const queryStringParams = [
-    tracker ? `tracker=${tracker}` : '',
-    btag ? `btag=${btag}` : '',
-    affid ? `affid=${affid}` : '',
-  ].filter(param => param !== '').join('&'); // Join only the non-empty parameters
-
-  regLink.value = `${PP_LOBBY_LINK}${queryStringParams ? '?' + queryStringParams : ''}#registration`;
-  loginLink.value = `${PP_LOBBY_LINK}${queryStringParams ? '?' + queryStringParams : ''}#login`;
-  playLink.value = `${PP_LOBBY_LINK}${queryStringParams ? '?' + queryStringParams : ''}#play/`;
-}
-
     await updateLinks();
 
   } catch (error) {
     console.error('Error fetching games:', error);
-  }
-}
-
-export async function handleParameter(parameterName) {
-  const params = new URLSearchParams(window.location.search);
-  const parameterFromURL = params.get(parameterName);
-  const parameterFromCookie = getCookie(parameterName);
-
-  if (parameterFromURL) {
-    setCookie(parameterName, parameterFromURL, 30, 'None', true);
-    return parameterFromURL;
-  } else if (parameterFromCookie) {
-    return parameterFromCookie;
-  } else {
-    return ''; // Return an empty string if the parameter is not found in the URL or cookies
   }
 }
 
