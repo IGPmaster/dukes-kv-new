@@ -1,0 +1,1 @@
+{"version":3,"file":"language-MUYJj1c2.mjs","sources":["../../../../middleware/language.js"],"sourcesContent":null,"names":["language","defineNuxtRouteMiddleware","to","from","preferredLanguage","setCookie"],"mappings":"oGAAA,MAAAA,EAAeC,GAA0B,CAACC,EAAIC,KAEtC,MAAAC,EACNC,EAAU,OAAQD,EAAiB"}
