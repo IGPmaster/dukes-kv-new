@@ -119,10 +119,10 @@
           <img 
             src="../static/dukescasino-logo-new.png" 
             loading="lazy" 
-            alt="Dukes Casino footer Logo"
+            alt="Hippozino Casino footer Logo"
             class="footer_logo p-5 shadow-md rounded-lg" 
-            height="100" 
-            width="200" 
+            height="" 
+            width="" 
           />
         </div>
       </div>
