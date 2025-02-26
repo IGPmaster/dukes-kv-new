@@ -9,32 +9,31 @@ export default {
       path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/) ||
       path.startsWith('/assets/') ||
       path.startsWith('/images/') ||
-      path.startsWith('/img/')
+      path.startsWith('/img/') ||
+      path.startsWith('/js/') ||
+      path.startsWith('/css/')
     ) {
       // Let Cloudflare Pages handle static assets
       return env.ASSETS.fetch(request);
     }
 
-    // Special handling for blog posts
-    if (path.startsWith('/blog/')) {
-      // Rewrite to index.html for client-side routing to handle
+    // For ALL other routes, serve the SPA's index.html without redirecting
+    // This includes /blog/* paths and any other non-asset paths
+    try {
       const response = await env.ASSETS.fetch(`${url.origin}/index.html`);
+      
+      // Return the index.html content but keep the original URL
       return new Response(response.body, {
-        headers: response.headers,
+        headers: {
+          ...response.headers,
+          'Content-Type': 'text/html; charset=utf-8',
+          // Prevent caching to ensure fresh content
+          'Cache-Control': 'no-cache, no-store, must-revalidate'
+        },
         status: 200
       });
+    } catch (error) {
+      return new Response(`Error serving SPA: ${error.message}`, { status: 500 });
     }
-
-    // For all other routes, serve the SPA's index.html
-    if (!path.includes('.')) {
-      const response = await env.ASSETS.fetch(`${url.origin}/index.html`);
-      return new Response(response.body, {
-        headers: response.headers,
-        status: 200
-      });
-    }
-
-    // Default: let Cloudflare Pages handle the request
-    return env.ASSETS.fetch(request);
   }
 };
