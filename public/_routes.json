@@ -1,9 +1,7 @@
 {
   "version": 1,
   "include": [
-    "/*",
-    "/blog/*",
-    "/blog/:slug/*"
+    "/*"
   ],
   "exclude": [
     "/assets/*", 
