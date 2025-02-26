@@ -44,7 +44,7 @@ export function useCookieConsent() {
   ];
 
   const getTrackerFromURL = () => {
-    if (typeof window === 'undefined' || !hasUserMadeChoice.value || !preferences.value.affiliate) return null;
+    if (typeof window === 'undefined') return null;
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('tracker');
   };
@@ -54,12 +54,12 @@ export function useCookieConsent() {
     const btag = urlParams.get('btag');
     const affid = urlParams.get('affid');
     
-    // Only include tracker if affiliate tracking is consented to and user has made a choice
-    let finalTracker = null;
-    if (preferences.value.affiliate && hasUserMadeChoice.value) {
-        // Only check for tracker if we have consent
-        const urlTracker = tracker || urlParams.get('tracker') || getCookie('affiliateTracker');
-        finalTracker = urlTracker;
+    // Get tracker from URL or passed tracker, regardless of consent
+    let finalTracker = tracker || urlParams.get('tracker');
+    
+    // Only use cookie tracker if we have consent and user made a choice
+    if (!finalTracker && preferences.value.affiliate && hasUserMadeChoice.value) {
+        finalTracker = getCookie('affiliateTracker');
     }
     
     // Build query string with all available parameters
